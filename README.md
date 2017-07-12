@@ -25,6 +25,8 @@ $ gem install trulioo
 Settings can be configured as so:
 
 ```ruby
+require 'trulioo'
+
 Trulioo.configure do |config|
   config.username = 'username'
   config.password = 'password'
@@ -33,11 +35,13 @@ end
 
 ### Usage
 
-```ruby
-require 'trulioo'
+You'll want to try the `say_hello` to make sure the URL is correct and the
+`test_authentication` endpoint to make sure your credientials are correct.
 
+```ruby
 client = Trulioo::Client.new
-client.say_hello
+client.say_hello              # => "Hello World"
+client.test_authentication    # => "Hello Company_Username"
 ```
 
 ## API Endpoints
@@ -55,8 +59,8 @@ This is the only endpoint that does not require authentication. It takes in an
 optional param that will be displayed in the greeting.
 
 ```ruby
-client.say_hello             # => "Hello World"
-client.say_hello('Company')  # => "Hello Company"
+client.connection.say_hello            # => "Hello World"
+client.connection.say_hello 'Company'  # => "Hello Company"
 ```
 
 #### `test_authentication`
@@ -65,7 +69,7 @@ If the provided username and password are correct, this will return the username
 of your account in the greeting.
 
 ```ruby
-client.test_authentication # => "Hello Company_Username"
+client.connection.test_authentication  # => "Hello Company_Username"
 ```
 
 ### Verifications
@@ -81,9 +85,9 @@ param if you would like more information. The options available:
 - `:verbose`: If your account includes address cleansing and watchlist details.
 
 ```ruby
-client.transaction_record(transaction_id)
-client.transaction_record(transaction_id, :withaddress)
-client.transaction_record(transaction_id, :verbose)
+client.verifications.transaction_record(transaction_id)
+client.verifications.transaction_record(transaction_id, :withaddress)
+client.verifications.transaction_record(transaction_id, :verbose)
 ```
 
 #### `verify`
@@ -91,10 +95,10 @@ client.transaction_record(transaction_id, :verbose)
 Performs a verification. Accepts a hash for the data.
 
 ```ruby
-client.verify({ CountryCode: 'US', ... })
+client.verifications.verify({ CountryCode: 'US', ... })
 ```
 
-### Configurations
+### Configuration
 
 Information regarding how your account is configured.
 
@@ -103,7 +107,7 @@ Information regarding how your account is configured.
 Consents required for the provided country. Accepts a string or symbol.
 
 ```ruby
-client.consents('US')
+client.configuration.consents('US')
 ```
 
 #### `country_codes`
@@ -111,7 +115,7 @@ client.consents('US')
 Returns countries configured for your account.
 
 ```ruby
-client.consents
+client.configuration.consents
 ```
 
 #### `country_subdivisions`
@@ -120,7 +124,7 @@ Gets the provinces states or other subdivisions for a country, mostly matches
 ISO 3166-2.
 
 ```ruby
-client.country_subdivisions('US')
+client.configuration.country_subdivisions('US')
 ```
 
 #### `document_types`
@@ -128,7 +132,7 @@ client.country_subdivisions('US')
 Get available document verification types.
 
 ```ruby
-client.document_types('US')
+client.configuration.document_types('US')
 ```
 
 #### `fields`
@@ -137,5 +141,5 @@ Generates json schema for the API, which can be used to format your `data`
 object when performing a verification.
 
 ```ruby
-client.fields('US')
+client.configuration.fields('US')
 ```
